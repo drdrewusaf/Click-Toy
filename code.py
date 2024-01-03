@@ -82,7 +82,6 @@ def updateDisplay(newIndex):
 def deepSleep():
     text = ' '
     display.brightness = 0
-    pwrState = 'off'
     alarm.exit_and_deep_sleep_until_alarms(pin_alarm)
 
 def splash():
