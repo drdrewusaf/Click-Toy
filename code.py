@@ -11,7 +11,7 @@ from time import sleep
 from time import monotonic
 from random import randint
 
-def config_btn(pin):
+def configBtn(pin):
     pin = digitalio.DigitalInOut(pin)
     pin.direction = digitalio.Direction.INPUT
     pin.pull = digitalio.Pull.UP
@@ -19,7 +19,6 @@ def config_btn(pin):
     return btn
 
 def btnCheck():
-    global now
     btnUp.update()
     btnDown.update()
     btnLeft.update()
@@ -36,7 +35,6 @@ def btnCheck():
         pass
 
 def indexIncDec(upDown):
-    global now
     global newIndex
     if upDown == 'up':
         if newIndex + 1 > len(currentArray) - 1:
@@ -49,7 +47,6 @@ def indexIncDec(upDown):
         else:
             newIndex -=1
     updateDisplay(newIndex)
-    now = monotonic()
 
 def newColor():
     global color
@@ -70,6 +67,7 @@ def changeArray():
     updateDisplay(newIndex)
 
 def updateDisplay(newIndex):
+    global now
     if currentArray == alphabet:
         text = alphabet[newIndex]
     else:
@@ -79,6 +77,7 @@ def updateDisplay(newIndex):
     text_area.anchor_point = (0.5, 0.5)
     text_area.anchored_position = (disp_width / 2, disp_height / 2)
     display.root_group = text_area
+    now = monotonic()
 
 def deepSleep():
     text = ' '
@@ -107,13 +106,12 @@ display.rotation = 180
 disp_width = 80
 disp_height = 160
 display.brightness = 1
-pwrState = 'on'
 
 #Initialize the buttons
-btnUp = config_btn(board.GP14)
-btnDown = config_btn(board.GP15)
-btnLeft = config_btn(board.GP16)
-btnRight = config_btn(board.GP17)
+btnUp = configBtn(board.GP14)
+btnDown = configBtn(board.GP15)
+btnLeft = configBtn(board.GP16)
+btnRight = configBtn(board.GP17)
 pin_alarm = alarm.pin.PinAlarm(board.GP2, value=False, pull=True)
 
 #Start display with splash message, then at alphabet index 0
