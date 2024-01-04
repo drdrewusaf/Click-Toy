@@ -5,8 +5,12 @@ import digitalio
 import terminalio
 
 from adafruit_debouncer import Debouncer
-from adafruit_display_text import bitmap_label
 from adafruit_bitmap_font import bitmap_font
+from adafruit_display_text import bitmap_label
+from adafruit_display_shapes.rect import Rect
+from adafruit_display_shapes.circle import Circle
+from adafruit_display_shapes.triangle import Triangle
+#from adafruit_display_shapes.polygon import Polygon
 from time import sleep
 from time import monotonic
 from random import randint
@@ -34,6 +38,14 @@ def btnCheck():
     else:
         pass
 
+def splash():
+    text = 'Hello\nOllie!'
+    newColor()
+    text_area = bitmap_label.Label(scale=2, font=termFont, text=text, color=color)
+    text_area.anchor_point = (0.5, 0.5)
+    text_area.anchored_position = (disp_width / 2, disp_height / 2)
+    display.root_group = text_area
+    
 def indexIncDec(upDown):
     global newIndex
     if upDown == 'up':
@@ -48,6 +60,34 @@ def indexIncDec(upDown):
             newIndex -=1
     updateDisplay(newIndex)
 
+def changeArray():
+    global currentArray
+    global newIndex
+    newIndex = 0
+    if currentArray == alphabet:
+        currentArray = numbers
+    elif currentArray == numbers:
+        currentArray = shapes
+    else:
+        currentArray = alphabet
+    updateDisplay(newIndex)
+
+def shapeBuilder(shape):
+    global newShape
+    global shapeName
+    newColor()
+    shapeId = shapes[shape]
+    if shapeId == 'Rect':
+        newShape = Rect(10, 50, 60, 60, fill=color)
+        shapeName = 'Square'
+    elif shapeId == 'Circle':
+        newShape = Circle(40, 80, 30, fill=color)
+        shapeName = 'Circle'
+    elif shapeId == 'Triangle':
+        newShape = Triangle(10, 110, 40, 50, 70, 110, fill=color)
+        shapeName = 'Triangle'
+    return newShape, shapeName
+
 def newColor():
     global color
     r = str(hex(randint(0,255))).format(131).split('x')[1]
@@ -56,27 +96,31 @@ def newColor():
     color = int(f"0x{r}{g}{b}", 16)
     return color
 
-def changeArray():
-    global currentArray
-    global newIndex
-    if currentArray == alphabet:
-        currentArray = numbers
-    else:
-        currentArray = alphabet
-    newIndex = 0
-    updateDisplay(newIndex)
-
 def updateDisplay(newIndex):
+    noText = False
     global now
     if currentArray == alphabet:
         text = alphabet[newIndex]
-    else:
+    elif currentArray == numbers:
         text = numbers[newIndex]
-    newColor()
-    text_area = bitmap_label.Label(font=font, text=text, color=color)
-    text_area.anchor_point = (0.5, 0.5)
-    text_area.anchored_position = (disp_width / 2, disp_height / 2)
-    display.root_group = text_area
+    else:
+        shapeBuilder(newIndex)
+        noText = True
+    if noText:
+        text = ' '
+        text_area = bitmap_label.Label(font=font, text=text, color=color)
+        display.root_group = text_area
+        text_area = bitmap_label.Label(font=termFont, text=shapeName, background_tight=True)
+        text_area.anchor_point = (.5, 1)
+        text_area.anchored_position = (disp_width / 2, 30)
+        display.root_group.append(newShape)
+        display.root_group.append(text_area)
+    else:
+        newColor()
+        text_area = bitmap_label.Label(font=font, text=text, color=color)
+        text_area.anchor_point = (0.5, 0.5)
+        text_area.anchored_position = (disp_width / 2, disp_height / 2)
+        display.root_group = text_area
     now = monotonic()
 
 def deepSleep():
@@ -84,21 +128,14 @@ def deepSleep():
     display.brightness = 0
     alarm.exit_and_deep_sleep_until_alarms(pin_alarm)
 
-def splash():
-    text = 'Hello\nOllie!'
-    termFont = terminalio.FONT
-    newColor()
-    text_area = bitmap_label.Label(font=termFont, text=text, color=color)
-    text_area.anchor_point = (0.5, 0.5)
-    text_area.anchored_position = (disp_width / 2, disp_height / 2)
-    display.root_group = text_area
-
 font_file = "fonts/roboto94.pcf"
 font = bitmap_font.load_font(font_file)
+termFont = terminalio.FONT
 alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R",
             "S", "T", "U", "V", "W", "X", "Y", "Z"]
 numbers = ["1", "2","3","4","5","6","7","8","9","0"]
+shapes = ['Rect','Circle','Triangle']
 
 display = board.DISPLAY
 display.rotation = 180
