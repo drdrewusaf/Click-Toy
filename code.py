@@ -2,7 +2,6 @@ import alarm
 import board
 import displayio
 import digitalio
-import terminalio
 import vectorio
 
 from adafruit_debouncer import Debouncer
@@ -65,6 +64,8 @@ def changeArray():
         currentArray = numbers
     elif currentArray == numbers:
         currentArray = shapes
+    elif currentArray == shapes:
+        currentArray = colors
     else:
         currentArray = alphabet
     updateDisplay(newIndex)
@@ -75,7 +76,7 @@ def shapeBuilder(shape):
     palette[0] = color
     shapeId = shapes[shape]
     if shapeId == 'Square':
-        newShape = vectorio.Rectangle(pixel_shader=palette, width=60, height=60, 
+        newShape = vectorio.Rectangle(pixel_shader=palette, width=60, height=60,
                                       x=10, y=50)
         shapeName = 'Square'
     elif shapeId == 'Circle':
@@ -86,7 +87,7 @@ def shapeBuilder(shape):
         newShape = vectorio.Polygon(pixel_shader=palette, points=points, x=0, y=0)
         shapeName = 'Triangle'
     elif shapeId == 'Rectangle':
-        newShape = vectorio.Rectangle(pixel_shader=palette, width=60, height=90, 
+        newShape = vectorio.Rectangle(pixel_shader=palette, width=60, height=90,
                                       x=10, y=40)
         shapeName = 'Rectangle'
     elif shapeId == 'Diamond':
@@ -98,7 +99,7 @@ def shapeBuilder(shape):
         newShape = vectorio.Polygon(pixel_shader=palette, points=points, x=0, y=0)
         shapeName = 'Pentagon'
     elif shapeId == 'Star':
-        points = [(22, 104), (40, 94), (58, 104), (51, 83), (69, 71), 
+        points = [(22, 104), (40, 94), (58, 104), (51, 83), (69, 71),
                   (47, 71), (40, 50), (33, 71), (11, 71), (29, 83)]
         newShape = vectorio.Polygon(pixel_shader=palette, points=points, x=0, y=0)
         shapeName = 'Star'
@@ -106,10 +107,9 @@ def shapeBuilder(shape):
 
 def newColor():
     global color
-    r = str(hex(randint(0, 255))).format(131).split('x')[1]
-    g = str(hex(randint(0, 255))).format(131).split('x')[1]
-    b = str(hex(randint(0, 255))).format(131).split('x')[1]
-    color = int(f'0x{r}{g}{b}', 16)
+    nColor = color
+    while nColor == color:
+        color = colors[randint(0, 7)][1]
     return color
 
 def bigText(text):
@@ -119,10 +119,16 @@ def bigText(text):
     text_area.anchored_position = (disp_width / 2, disp_height / 2)
     return text_area
 
-def littleText(text):
+def littleText(text, bgColor=None):
     global word_area
-    word_area = bitmap_label.Label(font=littleFont, text=text, 
-                                   background_tight=True)
+    if bgColor:
+        word_area = bitmap_label.Label(font=littleFont, text=text,
+                                       background_color=bgColor, padding_top=30,
+                                       padding_bottom=140, padding_right=40,
+                                       padding_left=40)
+    else:
+        word_area = bitmap_label.Label(font=littleFont, text=text,
+                                       background_tight=True)
     word_area.anchor_point = (.5, 1)
     word_area.anchored_position = (disp_width / 2, 30)
     return word_area
@@ -150,13 +156,19 @@ def updateDisplay(newIndex):
         bigText(letNum)
         newColor()
         display.root_group = text_area
-    else:
+    elif currentArray == shapes:
         newColor()
         shapeBuilder(newIndex)
         noText()
         littleText(shapeName)
         display.root_group = noText_area
         display.root_group.append(newShape)
+        display.root_group.append(word_area)
+    elif currentArray == colors:
+        newColor()
+        noText()
+        littleText(colors[newIndex][0], colors[newIndex][1])
+        display.root_group = noText_area
         display.root_group.append(word_area)
     now = monotonic()
 
@@ -167,15 +179,18 @@ def deepSleep():
 bigFont = bitmap_font.load_font('fonts/roboto94.pcf')
 littleFont = bitmap_font.load_font('fonts/roboto16.pcf')
 alphabet = [('A', 'Apple'), ('B', 'Boat'), ('C', 'Cat'), ('D', 'Dog'),
-            ('E', 'Elephant'), ('F', 'Fox'), ('G', 'Green'), ('H', 'Hat'), 
-            ('I', 'Inch'), ('J', 'Jump'), ('K', 'Kite'), ('L', 'Ladybug'), 
-            ('M', 'Mouse'), ('N', 'Nurse'), ('O', 'Owl'), ('P', 'Party'), 
-            ('Q', 'Queen'), ('R', 'Rose'), ('S', 'Sun'), ('T', 'Tiger'), 
-            ('U', 'Unicorn'), ('V', 'Vase'), ('W', 'Water'), ('X', 'X-ray'), 
+            ('E', 'Elephant'), ('F', 'Fox'), ('G', 'Grape'), ('H', 'Hat'),
+            ('I', 'Inch'), ('J', 'Jump'), ('K', 'Kite'), ('L', 'Ladybug'),
+            ('M', 'Mouse'), ('N', 'Nurse'), ('O', 'Owl'), ('P', 'Party'),
+            ('Q', 'Queen'), ('R', 'Rose'), ('S', 'Sun'), ('T', 'Tiger'),
+            ('U', 'Unicorn'), ('V', 'Vase'), ('W', 'Water'), ('X', 'X-ray'),
             ('Y', 'Yarn'), ('Z', 'Zebra')]
 numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 shapes = ['Square', 'Circle', 'Triangle', 'Rectangle',
           'Diamond', 'Pentagon', 'Star']
+colors = [('Red', 0xF20000), ('Green', 0x00F200), ('Blue', 0x0000F2),
+          ('Orange', 0xF26500), ('Yellow', 0xF2F200), ('Purple', 0x8500F2),
+          ('Brown', 0x3D1D00), ('Pink', 0xFF00CC)]
 
 display = board.DISPLAY
 display.rotation = 180
@@ -192,8 +207,9 @@ btnRight = configBtn(board.GP17)
 pin_alarm = alarm.pin.PinAlarm(board.GP2, value=False, pull=True)
 
 # Start display with splash message, then at alphabet index 0
+color = 0xFFFFFF
 splash()
-sleep(.1)
+sleep(3)
 currentArray = alphabet
 newIndex = 0
 updateDisplay(newIndex)
