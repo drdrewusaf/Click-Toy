@@ -3,15 +3,17 @@
 
 Using a Waveshare ESP32-S2-Pico-LCD board to display letters, numbers, shapes, and colors as a learning and haptic (through clicks, not motors) toy.
 
-![Assembled Toy](https://github.com/Ollie-Click-Toy/tree/main/images/Assembled_Toy.jpg "Assembled Toy")
+![Assembled Toy](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Assembled_Toy.jpg "Assembled Toy")
 
-![Toy Operating](https://github.com/Ollie-Click-Toy/tree/main/images/Operation.gif "Operation")
+![Toy Operating](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Operation.gif "Operation")
 
 ## Hardware
 Below you will find details on the hardware used in this project.
 
 - Waveshare ESP32-S2-Pico-LCD
     - https://www.waveshare.com/esp32-s2.htm
+    - Load CircuitPython as the onboard OS
+          - https://circuitpython.org/board/waveshare_esp32_s2_pico_lcd/
 - Buttons 
     - Nothing special, just large momentary buttons
 - Lithium Battery 
