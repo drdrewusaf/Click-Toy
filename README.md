@@ -25,10 +25,13 @@ Below you will find details on the hardware used in this project.
 You can download the 3D models (.stl format) in the "3d models" folder or at the links below.
 
 [Toy Case](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/3d%20models/Toy_Case.stl)
+
 ![Toy Case](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Toy_Case_model.jpg "Toy Case")
 
 [Buttons](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/3d%20models/Buttons.stl)
+
 ![Buttons](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Buttons_model.jpg "Buttons")
 
 [Switch Mounting Board](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/3d%20models/Switch_Board.stl)
+
 ![Switch Mounting Board](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Switch_Board_model.jpg "Switch Mounting Board")
