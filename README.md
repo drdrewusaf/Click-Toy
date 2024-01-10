@@ -1,5 +1,5 @@
 
-# Ollie-Click-Toy
+# Click-Toy
 
 Using a Waveshare ESP32-S2-Pico-LCD board to display letters, numbers, shapes, and colors as a learning and haptic (through clicks, not motors) toy.
 
