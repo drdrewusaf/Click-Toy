@@ -5,10 +5,12 @@ Using a Waveshare ESP32-S2-Pico-LCD board to display letters, numbers, shapes, a
 
 ![Assembled Toy](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Assembled_Toy.jpg "Assembled Toy")
 
-![Toy Operating](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Operation.gif "Operation")
+![Toy Operating](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Operation.gif "Toy Operating")
 
 ## Hardware
 Below you will find details on the hardware used in this project.
+
+![Toy_Inside](https://github.com/drdrewusaf/Click-Toy/blob/main/images/Toy_inside.jpg "Toy Inside")
 
 - Waveshare ESP32-S2-Pico-LCD
     - https://www.waveshare.com/esp32-s2.htm
@@ -21,6 +23,8 @@ Below you will find details on the hardware used in this project.
     - Needs micro JST plug
     - Dimensions must fit inside 3D model
 - Plexiglass to fill the window space on 3D model
+- 4 M4x10 (or similar size) screws for case
+- 4 M2x4 (or simiar size) screws for switch board
 - Various lengths of wire
 
 ## 3D Models for Printing
@@ -37,3 +41,6 @@ You can download the 3D models (.stl format) in the "3d models" folder or at the
 [Switch Mounting Board](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/3d%20models/Switch_Board.stl)
 
 ![Switch Mounting Board](https://github.com/drdrewusaf/Ollie-Click-Toy/blob/main/images/Switch_Board_model.jpg "Switch Mounting Board")
+
+## Wire Schematic
+![Schematic](https://github.com/drdrewusaf/Click-Toy/blob/main/images/Schematic.jpg "Schematic")
