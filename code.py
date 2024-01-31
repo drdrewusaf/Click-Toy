@@ -28,9 +28,9 @@ def btnCheck():
     elif btnDown.fell:
         indexIncDec('down')
     elif btnLeft.fell:
-        changeArray()
+        changeArray('left')
     elif btnRight.fell:
-        changeArray()
+        changeArray('right')
     else:
         pass
 
@@ -56,18 +56,30 @@ def indexIncDec(upDown):
             newIndex -= 1
     updateDisplay(newIndex)
 
-def changeArray():
+def changeArray(direction):
     global currentArray
     global newIndex
     newIndex = 0
     if currentArray == alphabet:
-        currentArray = numbers
+        if direction == 'right':
+            currentArray = numbers
+        else:
+            currentArray = colors
     elif currentArray == numbers:
-        currentArray = shapes
+        if direction == 'right':    
+            currentArray = shapes
+        else:
+            currentArray = alphabet
     elif currentArray == shapes:
-        currentArray = colors
-    else:
-        currentArray = alphabet
+        if direction == 'right':
+            currentArray = colors
+        else:
+            currentArray = numbers
+    elif currentArray == colors:
+        if direction == 'right':
+            currentArray = alphabet
+        else:
+            currentArray = shapes
     updateDisplay(newIndex)
 
 def shapeBuilder(shape):
@@ -178,6 +190,7 @@ def deepSleep():
 
 bigFont = bitmap_font.load_font('fonts/roboto94.pcf')
 littleFont = bitmap_font.load_font('fonts/roboto16.pcf')
+
 alphabet = [('A', 'Apple'), ('B', 'Boat'), ('C', 'Cat'), ('D', 'Dog'),
             ('E', 'Elephant'), ('F', 'Fox'), ('G', 'Grape'), ('H', 'Hat'),
             ('I', 'Inch'), ('J', 'Jump'), ('K', 'Kite'), ('L', 'Ladybug'),
@@ -186,8 +199,10 @@ alphabet = [('A', 'Apple'), ('B', 'Boat'), ('C', 'Cat'), ('D', 'Dog'),
             ('U', 'Unicorn'), ('V', 'Vase'), ('W', 'Water'), ('X', 'X-ray'),
             ('Y', 'Yarn'), ('Z', 'Zebra')]
 numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+
 shapes = ['Square', 'Circle', 'Triangle', 'Rectangle',
           'Diamond', 'Pentagon', 'Star']
+
 colors = [('Red', 0xF20000), ('Green', 0x00F200), ('Blue', 0x0000F2),
           ('Orange', 0xF26500), ('Yellow', 0xF2F200), ('Purple', 0x8500F2),
           ('Brown', 0x3D1D00), ('Pink', 0xFF00CC)]
@@ -209,7 +224,7 @@ pin_alarm = alarm.pin.PinAlarm(board.GP2, value=False, pull=True)
 # Start display with splash message, then at alphabet index 0
 color = 0xFFFFFF
 splash()
-sleep(3)
+sleep(2)
 currentArray = alphabet
 newIndex = 0
 updateDisplay(newIndex)
