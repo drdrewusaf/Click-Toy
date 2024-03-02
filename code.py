@@ -3,6 +3,7 @@ import board
 import displayio
 import digitalio
 import vectorio
+import pwmio
 
 from adafruit_debouncer import Debouncer
 from adafruit_bitmap_font import bitmap_font
@@ -41,9 +42,15 @@ def splash():
     text_area.anchor_point = (0.5, 0.5)
     text_area.anchored_position = (disp_width / 2, disp_height / 2)
     display.root_group = text_area
+    
+def buzzBeep():
+    pwmBuzzer.duty_cycle = 65500
+    sleep(.05)
+    pwmBuzzer.duty_cycle = 0
 
 def indexIncDec(upDown):
     global newIndex
+    buzzBeep()
     if upDown == 'up':
         if newIndex + 1 > len(currentArray) - 1:
             newIndex = 0
@@ -59,6 +66,7 @@ def indexIncDec(upDown):
 def changeArray(direction):
     global currentArray
     global newIndex
+    buzzBeep()
     newIndex = 0
     if currentArray == alphabet:
         if direction == 'right':
@@ -66,7 +74,7 @@ def changeArray(direction):
         else:
             currentArray = colors
     elif currentArray == numbers:
-        if direction == 'right':    
+        if direction == 'right':
             currentArray = shapes
         else:
             currentArray = alphabet
@@ -214,12 +222,14 @@ disp_height = 160
 display.brightness = 1
 palette = displayio.Palette(1)
 
-# Initialize the buttons
+# Initialize the buttons & pins
 btnUp = configBtn(board.GP14)
 btnDown = configBtn(board.GP15)
 btnLeft = configBtn(board.GP16)
 btnRight = configBtn(board.GP17)
 pin_alarm = alarm.pin.PinAlarm(board.GP2, value=False, pull=True)
+pwmBuzzer = pwmio.PWMOut(board.GP8, duty_cycle=0)
+
 
 # Start display with splash message, then at alphabet index 0
 color = 0xFFFFFF
