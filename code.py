@@ -42,7 +42,7 @@ def splash():
     text_area.anchor_point = (0.5, 0.5)
     text_area.anchored_position = (disp_width / 2, disp_height / 2)
     display.root_group = text_area
-    
+
 def buzzBeep():
     pwmBuzzer.duty_cycle = 65500
     sleep(.05)
@@ -66,34 +66,30 @@ def indexIncDec(upDown):
 def changeArray(direction):
     global currentArray
     global newIndex
+    global arrId
     buzzBeep()
     newIndex = 0
-    if currentArray == alphabet:
-        if direction == 'right':
-            currentArray = numbers
-        else:
-            currentArray = colors
-    elif currentArray == numbers:
-        if direction == 'right':
-            currentArray = shapes
-        else:
-            currentArray = alphabet
-    elif currentArray == shapes:
-        if direction == 'right':
-            currentArray = colors
-        else:
-            currentArray = numbers
-    elif currentArray == colors:
-        if direction == 'right':
-            currentArray = alphabet
-        else:
-            currentArray = shapes
+    if arrId == 1 and direction == 'left':
+        arrId = 4
+    elif arrId == 4 and direction == 'right':
+        arrId = 1
+    elif direction == 'left':
+        arrId = arrId - 1
+    else:
+        arrId = arrId + 1
+    if arrId == 1:
+        currentArray = alphabet
+    elif arrId == 2:
+        currentArray = numbers
+    elif arrId == 3:
+        currentArray = shapes
+    elif arrId == 4:
+        currentArray = colors
     updateDisplay(newIndex)
 
 def shapeBuilder(shape):
     global newShape
     global shapeName
-    palette[0] = color
     shapeId = shapes[shape]
     if shapeId == 'Square':
         newShape = vectorio.Rectangle(pixel_shader=palette, width=60, height=60,
@@ -123,6 +119,7 @@ def shapeBuilder(shape):
                   (47, 71), (40, 50), (33, 71), (11, 71), (29, 83)]
         newShape = vectorio.Polygon(pixel_shader=palette, points=points, x=0, y=0)
         shapeName = 'Star'
+    palette[0] = color
     return newShape, shapeName
 
 def newColor():
@@ -199,6 +196,7 @@ def deepSleep():
 bigFont = bitmap_font.load_font('fonts/roboto94.pcf')
 littleFont = bitmap_font.load_font('fonts/roboto16.pcf')
 
+# arrId 1
 alphabet = [('A', 'Apple'), ('B', 'Boat'), ('C', 'Cat'), ('D', 'Dog'),
             ('E', 'Elephant'), ('F', 'Fox'), ('G', 'Grape'), ('H', 'Hat'),
             ('I', 'Inch'), ('J', 'Jump'), ('K', 'Kite'), ('L', 'Ladybug'),
@@ -206,11 +204,12 @@ alphabet = [('A', 'Apple'), ('B', 'Boat'), ('C', 'Cat'), ('D', 'Dog'),
             ('Q', 'Queen'), ('R', 'Rose'), ('S', 'Sun'), ('T', 'Tiger'),
             ('U', 'Unicorn'), ('V', 'Vase'), ('W', 'Water'), ('X', 'X-ray'),
             ('Y', 'Yarn'), ('Z', 'Zebra')]
+# arrId 2
 numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-
+# arrId 3
 shapes = ['Square', 'Circle', 'Triangle', 'Rectangle',
           'Diamond', 'Pentagon', 'Star']
-
+# arrId 4
 colors = [('Red', 0xF20000), ('Green', 0x00F200), ('Blue', 0x0000F2),
           ('Orange', 0xF26500), ('Yellow', 0xF2F200), ('Purple', 0x8500F2),
           ('Brown', 0x3D1D00), ('Pink', 0xFF00CC)]
@@ -235,6 +234,7 @@ pwmBuzzer = pwmio.PWMOut(board.GP8, duty_cycle=0)
 color = 0xFFFFFF
 splash()
 sleep(2)
+arrId = 1
 currentArray = alphabet
 newIndex = 0
 updateDisplay(newIndex)
